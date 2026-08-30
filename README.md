@@ -20,7 +20,8 @@ PaceFetch - Free Social Media &amp; Creator Toolkit | Public IG, TikTok, FB, You
 ### 🔥 Live Demo
 **Main App:** https://pacefetch.pages.dev
 **Admin Dashboard:** https://pacefetch.pages.dev/dash [Password Protected]
-https://github.com/Pacethel-group/PaceFetch/blob/main/index.html
+
+
 ### ✨ Features
 
 **Social Downloaders [Public Content Only]:**
