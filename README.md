@@ -1,7 +1,7 @@
 # PaceFetch
 PaceFetch - Free Social Media &amp; Creator Toolkit | Public IG, TikTok, FB, YouTube Thumbnail Downloader + Image/Video Compressor + QR Generator | © 2026
 <p align="center">
-  <img src="logo/pacefetch_new_logo_transparent.png" width="120" alt="PaceFetch Logo" />
+  <img src="logo/pacefetch.logo.png" width="120" alt="PaceFetch Logo" />
 </p>
 
 <h1 align="center">PaceFetch</h1>
