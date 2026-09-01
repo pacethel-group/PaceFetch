@@ -1,0 +1,9 @@
+{
+  "name": "pacefetch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PaceFetch public media downloader",
+  "engines": {
+    "node": "24.x"
+  }
+}
