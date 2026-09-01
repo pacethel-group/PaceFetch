@@ -1,8 +1,4 @@
 export default function handler(req, res) {
-  res.status(200).json({
-    ok: true,
-    service: "PaceFetch",
-    backend: "Vercel",
-    timestamp: new Date().toISOString()
-  });
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.status(200).json({ ok: true, status: "PaceFetch API is running", time: new Date().toISOString() });
 }
