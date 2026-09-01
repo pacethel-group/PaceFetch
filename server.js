@@ -1,53 +1,53 @@
 const express = require('express');
 const path = require('path');
-const ytdl = require('@distube/ytdl-core');
 const app = express();
 const PORT = process.env.PORT || 10000;
+
 app.use(express.static('.'));
+app.use(express.json());
 
-app.get('/api/stream', async (req,res)=>{
-  const url = req.query.url;
-  const info = await ytdl.getInfo(url);
-  res.header('Content-Disposition', `attachment; filename="video.mp4"`);
-  ytdl(url, { quality: 'highest', filter: f=> f.hasVideo && f.hasAudio }).pipe(res);
-});
-
-app.get('/api/fetch', async (req,res)=>{
+app.get('/api/fetch', async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   const inputUrl = req.query.url;
-  if(!inputUrl) return res.json({success:false, error:"No URL"});
+  if (!inputUrl) return res.json({ success: false, error: "No URL provided" });
 
-  // YOUTUBE
-  if(inputUrl.includes('youtube.com') || inputUrl.includes('youtu.be')){
-    try{
-      const info = await ytdl.getInfo(inputUrl);
-      return res.json({
-        success:true,
-        videoUrl:`/api/stream?url=${encodeURIComponent(inputUrl)}`,
-        thumb:info.videoDetails.thumbnails.pop().url,
-        title:info.videoDetails.title
-      });
-    }catch(e){ return res.json({success:false, error:e.message}); }
-  }
-
-  // TIKTOK - using Cobalt
-  try{
-    const r = await fetch("https://api.cobalt.tools/api/json",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({url:inputUrl})
+  try {
+    const response = await fetch("https://api.cobalt.tools/api/json", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        url: inputUrl,
+        vQuality: "720",
+        filenamePattern: "basic"
+      })
     });
-    const d = await r.json();
-    if(d.url) return res.json({success:true, videoUrl:d.url, thumb:d.thumb, title:"TikTok Video"});
-  }catch(e){}
 
-  try{
-    const r = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(inputUrl)}&hd=1`);
-    const j = await r.json();
-    if(j.data?.play) return res.json({success:true, videoUrl:j.data.play, thumb:j.data.cover, title:j.data.title});
-  }catch(e){}
-
-  res.json({success:false, error:"This link is temporarily blocked. Instagram is down globally today, TikTok sometimes blocks. Try a YouTube link - it works 100%. For TikTok, try a different video."});
+    const data = await response.json();
+    
+    if (data.url) {
+      return res.json({
+        success: true,
+        videoUrl: data.url,
+        thumb: data.thumb || "",
+        title: data.filename || "Video",
+        platform: "video"
+      });
+    } else {
+      return res.json({
+        success: false,
+        error: data.text || "Could not extract video. Try a different public link."
+      });
+    }
+  } catch (e) {
+    return res.json({ success: false, error: "Server error: " + e.message });
+  }
 });
 
-app.get('*', (req,res)=> res.sendFile(path.join(__dirname,'index.html')));
-app.listen(PORT);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(PORT, () => console.log("Running on " + PORT));
